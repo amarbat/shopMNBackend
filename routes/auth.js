@@ -1,11 +1,12 @@
-var express               = require('express');
-var router                = express.Router();
+var express               = require ('express');
+var router                = express.Router ();
 var bcrypt                = require ("bcryptjs");
 var jwt                   = require ("jsonwebtoken");
 /* GET home page. */
 
 
 const User                = require ("../model/user");
+
 
 router.post ("/register", async (req, res) => {
 
@@ -17,7 +18,7 @@ router.post ("/register", async (req, res) => {
 
     // Validate user input
     if (!(email && password && first_name && last_name)) {
-      console.log (`${email} ${password} ${first_name} ${last_name}`);
+      // console.log (`${email} ${password} ${first_name} ${last_name}`);
       res.status (400).send ("All input is required");
     }
 
@@ -29,11 +30,15 @@ router.post ("/register", async (req, res) => {
       return res.status (409).send ("User Already Exist. Please Login");
     }
 
+    // TODO: password length check, A-Z, a-z, 0-9, !?
+
     //Encrypt user password
-    encryptedPassword     = await bcrypt.hash(password, 10);
+    encryptedPassword     = await bcrypt.hash (
+      password, 10
+                            );
 
     // Create user in our database
-    const user            = await User.create({
+    const user            = await User.create ({
       first_name,
       last_name,
       email: email.toLowerCase(), // sanitize: convert email to lowercase
@@ -52,9 +57,9 @@ router.post ("/register", async (req, res) => {
     user.token            = token;
 
     // return new user
-    res.status(201).json(user);
+    res.status (201).json (user);
   } catch (err) {
-    console.log(err);
+    console.log (err);
   }
 });
 
@@ -97,5 +102,6 @@ router.post ("/login", async (req, res) => {
     console.log(err);
   }
 });
+
 
 module.exports            = router;
